@@ -1,7 +1,7 @@
 <ion-header>
   <ion-navbar>
     <ion-title>
-      LOOKA
+      LOOKÁ
     </ion-title>
   </ion-navbar>
 </ion-header>
@@ -25,13 +25,18 @@
     <div style="width:100%;height:auto;margin:0px 0px;line-height:250px;background-color:#e8ebef;text-align:center;">
       <i class="icon ion-image" style="font-size:64px;color:#888;vertical-align:middle;">
         <img [src]="recentImgUrl" alt="">
+        <img [src]="imageToShow">
       </i>
     </div>
-    <button id="looka-get-btn" ion-button color="royal" block large style="color:#FFFFFF;" [disabled]="!checked" (click)="getImageURL()">
+    <button id="looka-get-btn" ion-button color="royal" block large style="color:#FFFFFF;" [disabled]="!checked" (click)="getImage('https://www.joshmorony.com/static/logo.png')">
       Получить фото
     </button>
     <button id="looka-send-photo" ion-button color="royal" block large (click)="upload()">
-      Отправить фото на сервер
+      Отправить фото на сервер{{text}}
     </button>
+    <div class="progress">
+        <div class="progress-bar progress-bar-striped bg-success" role="progressbar" [style.width]="(uploadProgress | async) + '%'" [attr.aria-valuenow]="(uploadProgress | async)" aria-valuemin="0" aria-valuemax="100"></div>
+    </div>
+
   </form>
 </ion-content>
