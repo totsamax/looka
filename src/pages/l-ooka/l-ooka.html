@@ -1,0 +1,37 @@
+<ion-header>
+  <ion-navbar>
+    <ion-title>
+      LOOKA
+    </ion-title>
+  </ion-navbar>
+</ion-header>
+<ion-content padding id="page1" style="background-color:#FFFFFF;">
+  <form id="lOOKA-form">
+    <ion-item id="looka-phone">
+      <ion-label>
+        телефон
+      </ion-label>
+      <ion-input type="tel" placeholder=""></ion-input>
+    </ion-item>
+    <ion-item id="looka-code">
+      <ion-label>
+        проверочный код
+      </ion-label>
+      <ion-input type="number" placeholder=""></ion-input>
+    </ion-item>
+    <button id="looka-check-btn" ion-button color="royal" block large>
+      Подтвердить телефон
+    </button>
+    <div style="width:100%;height:auto;margin:0px 0px;line-height:250px;background-color:#e8ebef;text-align:center;">
+      <i class="icon ion-image" style="font-size:64px;color:#888;vertical-align:middle;">
+        <img [src]="recentImgUrl" alt="">
+      </i>
+    </div>
+    <button id="looka-get-btn" ion-button color="royal" block large style="color:#FFFFFF;" [disabled]="!checked" (click)="getImageURL()">
+      Получить фото
+    </button>
+    <button id="looka-send-photo" ion-button color="royal" block large (click)="upload()">
+      Отправить фото на сервер
+    </button>
+  </form>
+</ion-content>

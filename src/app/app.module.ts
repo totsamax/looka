@@ -1,30 +1,51 @@
+import { NgModule, ErrorHandler } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-import { ErrorHandler, NgModule } from '@angular/core';
-import { IonicApp, IonicErrorHandler, IonicModule } from 'ionic-angular';
-import { SplashScreen } from '@ionic-native/splash-screen';
-import { StatusBar } from '@ionic-native/status-bar';
-
+import { IonicApp, IonicModule, IonicErrorHandler } from 'ionic-angular';
 import { MyApp } from './app.component';
-import { HomePage } from '../pages/home/home';
+import { LOOKAPage } from '../pages/l-ooka/l-ooka';
+
+
+import { StatusBar } from '@ionic-native/status-bar';
+import { SplashScreen } from '@ionic-native/splash-screen';
+import { HttpModule } from '@angular/http';
+import {AngularFireDatabaseModule} from 'angularfire2/database';
+import {AngularFireStorageModule} from 'angularfire2/storage';
+import {AngularFireModule} from 'angularfire2';
+import {FirebaseService} from './../providers/firebase-service/firebase-service';
+
+// Initialize Firebase
+const firebaseConfig = {
+  apiKey: "AIzaSyBhuI5kmjpdrRLlFUpoR05DuPcrWAg5gQI",
+  authDomain: "looka-app.firebaseapp.com",
+  databaseURL: "https://looka-app.firebaseio.com",
+  projectId: "looka-app",
+  storageBucket: "looka-app.appspot.com",
+  messagingSenderId: "455079341262"
+};
 
 @NgModule({
   declarations: [
     MyApp,
-    HomePage
+    LOOKAPage
   ],
   imports: [
     BrowserModule,
-    IonicModule.forRoot(MyApp)
+    IonicModule.forRoot(MyApp),
+    HttpModule,
+    AngularFireDatabaseModule,
+    AngularFireStorageModule,
+    AngularFireModule.initializeApp(firebaseConfig)
   ],
   bootstrap: [IonicApp],
   entryComponents: [
     MyApp,
-    HomePage
+    LOOKAPage
   ],
   providers: [
     StatusBar,
     SplashScreen,
-    {provide: ErrorHandler, useClass: IonicErrorHandler}
+    FirebaseService,
+    {provide: ErrorHandler, useClass: IonicErrorHandler},
   ]
 })
 export class AppModule {}
