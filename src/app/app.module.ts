@@ -12,7 +12,10 @@ import {AngularFireDatabaseModule} from 'angularfire2/database';
 import {AngularFireStorageModule} from 'angularfire2/storage';
 import {AngularFireModule} from 'angularfire2';
 import {FirebaseService} from './../providers/firebase-service/firebase-service';
-
+import {HTTP} from "@ionic-native/http";
+import { FileTransfer, FileUploadOptions, FileTransferObject } from '@ionic-native/file-transfer';
+import { File } from '@ionic-native/file';
+ 
 // Initialize Firebase
 const firebaseConfig = {
   apiKey: "AIzaSyBhuI5kmjpdrRLlFUpoR05DuPcrWAg5gQI",
@@ -46,6 +49,7 @@ const firebaseConfig = {
     SplashScreen,
     FirebaseService,
     {provide: ErrorHandler, useClass: IonicErrorHandler},
+    HTTP,File, FileTransfer, FileTransferObject
   ]
 })
 export class AppModule {}

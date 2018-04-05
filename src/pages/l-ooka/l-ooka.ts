@@ -1,60 +1,113 @@
-import { Component } from "@angular/core";
-import { NavController } from "ionic-angular";
-import { Http} from "@angular/http";
-import { ResponseContentType } from "@angular/http";
-import { Observable } from "rxjs/Observable";
-import "rxjs/add/operator/map";
+import {
+  Component,
+  DoCheck
+} from "@angular/core";
+import {
+  NavController
+} from "ionic-angular";
+import {
+  Http
+} from "@angular/http";
+import {
+  ResponseContentType
+} from "@angular/http";
 import {
   AngularFireStorage,
   AngularFireStorageReference,
   AngularFireUploadTask
 } from "angularfire2/storage";
-import {CameraServiceService} from "../../app/camera-service.service"
+import {
+  CameraServiceService
+} from "../../app/camera-service.service";
+import {
+  Platform
+} from 'ionic-angular';
+import {
+  File
+} from '@ionic-native/file';
 
 @Component({
   selector: "page-l-ooka",
   templateUrl: "l-ooka.html",
-  providers:[CameraServiceService]
+  providers: [CameraServiceService]
 })
-export class LOOKAPage {
+
+export class LOOKAPage implements DoCheck {
+
   recentImgUrl;
   checked = true;
   http: Http;
-  cameraUrl = "http://10.5.5.9:8080/";
+  cameraUrl = "https://picsum.photos/list";
+  selectedPhoto = "http://10.5.5.9:8080/videos/DCIM/100GOPRO/GOPR0142.JPG";
+  selectedPhotoBlob;
   ref: AngularFireStorageReference;
   task: AngularFireUploadTask;
   imageToShow: any;
   isImageLoading;
   uploadProgress;
-  cameraService:CameraServiceService;
-  text:string;
+  cameraService: CameraServiceService;
+  text: string = 'none';
+  photos: any;
+  newPhotos: any;
 
   constructor(
+    public plt: Platform,
     public navCtrl: NavController,
     http: Http,
     private afStorage: AngularFireStorage,
-    cameraService:CameraServiceService
+    cameraService: CameraServiceService,
+    private file: File
   ) {
     this.http = http;
-    this.cameraService=cameraService;
-    this.cameraService.getPhotosList().subscribe(data => {
-      this.text=data;
-    });
+    this.cameraService = cameraService;
+    // this.cameraService.getPhotosList().then((data) => {
+    //   this.photos = JSON.parse(data.data).media[0].fs;
+    //   console.log(JSON.parse(data.data).media[0].fs);
+    //   });
+    this.plt.ready().then(() => {
+      console.log("Платформа готова");
+
+    })
   }
-  upload() {
-    this.http
-      .get("https://www.joshmorony.com/static/logo.png", {
-        responseType: ResponseContentType.Blob
-      })
-      .map(res => res.blob())
-      .subscribe(data => {
-        const randomId = Math.random()
-          .toString(36)
-          .substring(2);
-        this.ref = this.afStorage.ref(randomId);
-        this.task = this.ref.put(data);
-        this.uploadProgress = this.task.percentageChanges();
-      });
+
+  ngDoCheck() {
+    if (this.photos != this.newPhotos) {
+      this.photos = this.newPhotos;
+    }
+  };
+
+  parseInt(str) {
+    return parseInt(str, 10);
+  };
+
+  isSelected(photo) {
+    photo == this.selectedPhoto ? true : false;
+  };
+  selectPhoto(photo) {
+    this.selectedPhoto = 'http://10.5.5.9:8080/videos/DCIM/100GOPRO/' + photo;
+  }
+
+
+  upload(selectedPhotoBlob) {
+    console.log(this.file.dataDirectory + 'temp.jpg');
+    this.file.readAsArrayBuffer(this.file.dataDirectory, 'temp.jpg').then((str) => { 
+      let blob= new Blob([str],{type: "image/jpeg"});
+      const randomId = Math.random()
+        .toString(36)
+        .substring(2);
+      this.ref = this.afStorage.ref(randomId);
+      var fileName = Math.random().toString(36).substring(2);
+      var uploadTask = this.afStorage.ref('images/' + fileName+".jpg").put(blob).then(function (snapshot) {
+          console.log('Uploaded a file!'+snapshot.downloadURL);
+          
+        },
+        (a) => {
+          console.log(a);
+        });
+    }, (reason) => {
+      console.log("Файл не прочитан:" + reason)
+    });
+
   }
   getMax(arr, prop) {
     var max;
@@ -62,32 +115,37 @@ export class LOOKAPage {
       if (!max || parseInt(arr[i][prop]) > parseInt(max[prop])) max = arr[i];
     }
     return max;
-  }
+  };
+
+  getImages() {
+    this.cameraService.getPhotosList().then((data) => {
+      this.newPhotos = JSON.parse(data.data).media[0].fs;
+
+      console.log(JSON.parse(data.data).media[0].fs);
+    });
+  };
 
   getImage(imageUrl) {
+    this.cameraService.downloadPhoto(imageUrl, 'temp.jpg').then((entry) => {
+      console.log('download complete: ' + entry.toURL());
+      this.selectedPhotoBlob = entry.toURL();
+    }, (error) => {
+      console.log();
+    });
+  };
 
-    this.http
-      .get(imageUrl, {
-        responseType: ResponseContentType.Blob
-      })
-      .map(res => res.blob())
-      .subscribe(data => {
-      this.imageToShow= this.createImageFromBlob(data);
-      });
-  }
 
-  createImageFromBlob(image: Blob) {
-    let reader = new FileReader();
-    reader.addEventListener(
-      "load",
-      () => {
-        this.imageToShow = reader.result;
-      },
-      false
-    );
-
-    if (image) {
-      reader.readAsDataURL(image);
-    }
-  }
+  // createImageFromBlob(image: Blob) {
+  //   let reader = new FileReader();
+  //   reader.addEventListener(
+  //     "load",
+  //     () => {
+  //       this.imageToShow = reader.result;
+  //     },
+  //     false
+  //   );
+  //   if (image) {
+  //     reader.readAsDataURL(image);
+  //   };
+  // };
 }

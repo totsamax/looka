@@ -1,6 +1,7 @@
 <ion-header>
   <ion-navbar>
     <ion-title>
+      <p></p>
       LOOKÁ
     </ion-title>
   </ion-navbar>
@@ -22,22 +23,28 @@
     <button id="looka-check-btn" ion-button color="royal" block large>
       Подтвердить телефон
     </button>
-    <div style="width:100%;height:auto;margin:0px 0px;line-height:250px;background-color:#e8ebef;text-align:center;">
-      <i class="icon ion-image" style="font-size:64px;color:#888;vertical-align:middle;">
-        <img [src]="recentImgUrl" alt="">
-        <img [src]="imageToShow">
-      </i>
-    </div>
-    <button id="looka-get-btn" ion-button color="royal" block large style="color:#FFFFFF;" [disabled]="!checked" (click)="getImage('https://www.joshmorony.com/static/logo.png')">
+    <ion-item >
+      <img [src]="imageToShow">
+    </ion-item>
+    <ion-item >
+      <ion-list *ngFor='let photo of photos' [ngClass]="{'selected':isSelected('http://10.5.5.9:8080/videos/DCIM/100GOPRO/'+ photo.n)}">
+        <ion-item (click)="selectPhoto(photo.n)">
+          <ion-thumbnail item-start>
+            <img [src]="'http://10.5.5.9:8080/videos/DCIM/100GOPRO/' + photo.n">
+          </ion-thumbnail>
+          <h2>{{photo.n}}</h2>
+          <p>{{parseInt(photo.mod) * 1000 | date}}</p>
+          <button ion-button clear item-end>Выбрать фото</button>
+        </ion-item>
+      </ion-list>
+    </ion-item>
+    <button id="looka-get-btn" ion-button color="royal" block large style="color:#FFFFFF;" (click)="getImage(selectedPhoto)">
       Получить фото
     </button>
-    <button id="looka-send-photo" ion-button color="royal" block large (click)="upload()">
-      Отправить фото на сервер{{text}}
+    <button id="looka-send-photo" ion-button color="royal" block large (click)="upload(selectedPhotoBlob)">
+      Отправить фото на сервер
     </button>
-    <div class="progress">
-        <div class="progress-bar progress-bar-striped bg-success" role="progressbar" [style.width]="(uploadProgress | async) + '%'" [attr.aria-valuenow]="(uploadProgress | async)" aria-valuemin="0" aria-valuemax="100"></div>
-    </div>
-
+    {{selectedPhoto}}
   </form>
 </ion-content>
 
