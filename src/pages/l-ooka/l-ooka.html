@@ -44,6 +44,10 @@
     <button id="looka-send-photo" ion-button color="royal" block large (click)="upload(selectedPhotoBlob)">
       Отправить фото на сервер
     </button>
+    {{(uploadProgress | async)}}
+    <div class="progress">
+        <div class="progress-bar progress-bar-striped bg-success" role="progressbar" [style.width]="(uploadProgress | async) + '%'" ></div>
+      </div>
     {{selectedPhoto}}
   </form>
 </ion-content>

@@ -25,6 +25,8 @@ import {
 import {
   File
 } from '@ionic-native/file';
+import { Observable } from 'rxjs/Observable';
+import { map } from 'rxjs/operators/map';
 
 @Component({
   selector: "page-l-ooka",
@@ -38,13 +40,14 @@ export class LOOKAPage implements DoCheck {
   checked = true;
   http: Http;
   cameraUrl = "https://picsum.photos/list";
-  selectedPhoto = "http://10.5.5.9:8080/videos/DCIM/100GOPRO/GOPR0142.JPG";
+  selectedPhoto = "https://upload.wikimedia.org/wikipedia/commons/thumb/4/41/Landscape-nature-field-italy_%2824298559796%29.jpg/800px-Landscape-nature-field-italy_%2824298559796%29.jpg";
   selectedPhotoBlob;
   ref: AngularFireStorageReference;
   task: AngularFireUploadTask;
   imageToShow: any;
   isImageLoading;
-  uploadProgress;
+  uploadProgress: Observable<number>;
+  uploadState;
   cameraService: CameraServiceService;
   text: string = 'none';
   photos: any;
@@ -60,16 +63,12 @@ export class LOOKAPage implements DoCheck {
   ) {
     this.http = http;
     this.cameraService = cameraService;
-    // this.cameraService.getPhotosList().then((data) => {
-    //   this.photos = JSON.parse(data.data).media[0].fs;
-    //   console.log(JSON.parse(data.data).media[0].fs);
-    //   });
     this.plt.ready().then(() => {
       console.log("Платформа готова");
-
+      this.getImages();
     })
   }
-
+ 
   ngDoCheck() {
     if (this.photos != this.newPhotos) {
       this.photos = this.newPhotos;
@@ -97,13 +96,12 @@ export class LOOKAPage implements DoCheck {
         .substring(2);
       this.ref = this.afStorage.ref(randomId);
       var fileName = Math.random().toString(36).substring(2);
-      var uploadTask = this.afStorage.ref('images/' + fileName+".jpg").put(blob).then(function (snapshot) {
-          console.log('Uploaded a file!'+snapshot.downloadURL);
-          
-        },
-        (a) => {
-          console.log(a);
-        });
+      this.task = this.afStorage.ref('images/' + fileName+".jpg").put(blob);
+
+      this.uploadState = this.task.snapshotChanges().pipe(map(s => s.state));
+      this.uploadProgress = this.task.percentageChanges();
+
+
     }, (reason) => {
       console.log("Файл не прочитан:" + reason)
     });
@@ -120,7 +118,6 @@ export class LOOKAPage implements DoCheck {
   getImages() {
     this.cameraService.getPhotosList().then((data) => {
       this.newPhotos = JSON.parse(data.data).media[0].fs;
-
       console.log(JSON.parse(data.data).media[0].fs);
     });
   };
