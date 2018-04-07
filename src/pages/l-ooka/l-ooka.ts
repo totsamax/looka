@@ -25,8 +25,12 @@ import {
 import {
   File
 } from '@ionic-native/file';
-import { Observable } from 'rxjs/Observable';
-import { map } from 'rxjs/operators/map';
+import {
+  Observable
+} from 'rxjs/Observable';
+import {
+  map
+} from 'rxjs/operators/map';
 
 @Component({
   selector: "page-l-ooka",
@@ -46,7 +50,7 @@ export class LOOKAPage implements DoCheck {
   task: AngularFireUploadTask;
   imageToShow: any;
   isImageLoading;
-  uploadProgress: Observable<number>;
+  uploadProgress: Observable < number > ;
   uploadState;
   cameraService: CameraServiceService;
   text: string = 'none';
@@ -68,7 +72,7 @@ export class LOOKAPage implements DoCheck {
       this.getImages();
     })
   }
- 
+
   ngDoCheck() {
     if (this.photos != this.newPhotos) {
       this.photos = this.newPhotos;
@@ -89,14 +93,17 @@ export class LOOKAPage implements DoCheck {
 
   upload(selectedPhotoBlob) {
     console.log(this.file.dataDirectory + 'temp.jpg');
-    this.file.readAsArrayBuffer(this.file.dataDirectory, 'temp.jpg').then((str) => { 
-      let blob= new Blob([str],{type: "image/jpeg"});
+
+    this.file.readAsArrayBuffer(this.file.dataDirectory, 'temp.jpg').then((str) => {
+      let blob = new Blob([str], {
+        type: "image/jpeg"
+      });
       const randomId = Math.random()
         .toString(36)
         .substring(2);
       this.ref = this.afStorage.ref(randomId);
       var fileName = Math.random().toString(36).substring(2);
-      this.task = this.afStorage.ref('images/' + fileName+".jpg").put(blob);
+      this.task = this.afStorage.ref('images/' + fileName + ".jpg").put(blob);
 
       this.uploadState = this.task.snapshotChanges().pipe(map(s => s.state));
       this.uploadProgress = this.task.percentageChanges();
@@ -118,7 +125,8 @@ export class LOOKAPage implements DoCheck {
   getImages() {
     this.cameraService.getPhotosList().then((data) => {
       this.newPhotos = JSON.parse(data.data).media[0].fs;
-      console.log(JSON.parse(data.data).media[0].fs);
+      this.imageToShow = 'http://10.5.5.9:8080/videos/DCIM/100GOPRO/' + this.getMax(this.newPhotos, "n");
+      console.log(this.imageToShow);
     });
   };
 
@@ -129,6 +137,23 @@ export class LOOKAPage implements DoCheck {
     }, (error) => {
       console.log();
     });
+  };
+
+  takePhoto() {
+    this.cameraService.takePhoto().then((res) => {
+       
+        console.log(res);
+        // this.cameraService.getPhotosList().then((data) => {
+        //   this.newPhotos = JSON.parse(data.data).media[0].fs;
+        //   console.log(JSON.parse(data.data).media[0].fs);
+        //   this.imageToShow = 'http://10.5.5.9:8080/videos/DCIM/100GOPRO/' + this.getMax(this.newPhotos, "n");
+        //   console.log(this.imageToShow);
+        // });
+      }, (err) => {
+        console.log(err);
+      }
+
+    );
   };
 
 }

@@ -23,10 +23,10 @@
     <button id="looka-check-btn" ion-button color="royal" block large>
       Подтвердить телефон
     </button>
-    <ion-item >
+    <ion-item>
       <img [src]="imageToShow">
     </ion-item>
-    <ion-item >
+    <ion-item>
       <ion-list *ngFor='let photo of photos' [ngClass]="{'selected':isSelected('http://10.5.5.9:8080/videos/DCIM/100GOPRO/'+ photo.n)}">
         <ion-item (click)="selectPhoto(photo.n)">
           <ion-thumbnail item-start>
@@ -46,9 +46,11 @@
     </button>
     {{(uploadProgress | async)}}
     <div class="progress">
-        <div class="progress-bar progress-bar-striped bg-success" role="progressbar" [style.width]="(uploadProgress | async) + '%'" ></div>
-      </div>
+      <div class="progress-bar progress-bar-striped bg-success" role="progressbar" [style.width]="(uploadProgress | async) + '%'"></div>
+    </div>
+    <button ion-button color="secondary" block large (click)="takePhoto()">
+      Сделать фото
+    </button>
     {{selectedPhoto}}
   </form>
 </ion-content>
-

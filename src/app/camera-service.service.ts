@@ -34,6 +34,8 @@ export class CameraServiceService {
   };
   downloadPhoto(url, filePath) { 
       return this.http.downloadFile(url,{},{}, this.file.dataDirectory + filePath);
-  
+  };
+  takePhoto(){
+    return this.http.get('http://10.5.5.9/gp/gpControl/command/shutter?p=1',{},{});
   };
 }
