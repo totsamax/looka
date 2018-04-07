@@ -134,18 +134,4 @@ export class LOOKAPage implements DoCheck {
     });
   };
 
-
-  // createImageFromBlob(image: Blob) {
-  //   let reader = new FileReader();
-  //   reader.addEventListener(
-  //     "load",
-  //     () => {
-  //       this.imageToShow = reader.result;
-  //     },
-  //     false
-  //   );
-  //   if (image) {
-  //     reader.readAsDataURL(image);
-  //   };
-  // };
 }
