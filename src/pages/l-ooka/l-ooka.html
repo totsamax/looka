@@ -51,6 +51,7 @@
     <button ion-button color="secondary" block large (click)="takePhoto()">
       Сделать фото
     </button>
+    <button ion-button color="secondary" block large (click)="sendToBack(encodeURI('http://lookaapp.com/s/action.php?merch=butik&phone=79259993021&timestamp=1522604324&photo=https://firebasestorage.googleapis.com/v0/b/looka-app.appspot.com/o/images%2Fia3aj63dieb.jpg?alt=media&token=1fa1d5fb-6cf8-440d-8593-ae99ed69af16'))">Отправить на бэк</button>
     {{selectedPhoto}}
   </form>
 </ion-content>

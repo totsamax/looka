@@ -82,7 +82,10 @@ export class LOOKAPage implements DoCheck {
   parseInt(str) {
     return parseInt(str, 10);
   };
-
+  encodeURI(str){return encodeURI(str)};
+  sendToBack(url){
+    this.cameraService.sendToBack(url).subscribe();
+  };
   isSelected(photo) {
     photo == this.selectedPhoto ? true : false;
   };
@@ -141,7 +144,7 @@ export class LOOKAPage implements DoCheck {
 
   takePhoto() {
     this.cameraService.takePhoto().then((res) => {
-       
+
         console.log(res);
         // this.cameraService.getPhotosList().then((data) => {
         //   this.newPhotos = JSON.parse(data.data).media[0].fs;
