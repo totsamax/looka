@@ -8,25 +8,25 @@
 </ion-header>
 <ion-content padding id="page1" style="background-color:#FFFFFF;">
   <form id="lOOKA-form">
-    <ion-item id="looka-phone">
+    <!-- <ion-item id="looka-phone">
       <ion-label>
         телефон
       </ion-label>
       <ion-input type="tel" placeholder=""></ion-input>
-    </ion-item>
-    <ion-item id="looka-code">
+    </ion-item> -->
+    <!-- <ion-item id="looka-code">
       <ion-label>
         проверочный код
       </ion-label>
       <ion-input type="number" placeholder=""></ion-input>
-    </ion-item>
-    <button id="looka-check-btn" ion-button color="royal" block large>
+    </ion-item> -->
+    <!-- <button id="looka-check-btn" ion-button color="royal" block large>
       Подтвердить телефон
-    </button>
+    </button> -->
     <ion-item>
       <img [src]="imageToShow">
     </ion-item>
-    <ion-item>
+    <!-- <ion-item>
       <ion-list *ngFor='let photo of photos' [ngClass]="{'selected':isSelected('http://10.5.5.9:8080/videos/DCIM/100GOPRO/'+ photo.n)}">
         <ion-item (click)="selectPhoto(photo.n)">
           <ion-thumbnail item-start>
@@ -43,7 +43,7 @@
     </button>
     <button id="looka-send-photo" ion-button color="royal" block large (click)="upload(selectedPhotoBlob)">
       Отправить фото на сервер
-    </button>
+    </button> -->
     {{(uploadProgress | async)}}
     <div class="progress">
       <div class="progress-bar progress-bar-striped bg-success" role="progressbar" [style.width]="(uploadProgress | async) + '%'"></div>
@@ -51,7 +51,6 @@
     <button ion-button color="secondary" block large (click)="takePhoto()">
       Сделать фото
     </button>
-    <button ion-button color="secondary" block large (click)="sendToBack(encodeURI('http://lookaapp.com/s/action.php?merch=butik&phone=79259993021&timestamp=1522604324&photo=https://firebasestorage.googleapis.com/v0/b/looka-app.appspot.com/o/images%2Fia3aj63dieb.jpg?alt=media&token=1fa1d5fb-6cf8-440d-8593-ae99ed69af16'))">Отправить на бэк</button>
-    {{selectedPhoto}}
+    <a [href]="downloadURL | async">!{{ downloadURL | async }}</a>
   </form>
 </ion-content>
