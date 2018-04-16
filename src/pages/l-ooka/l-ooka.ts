@@ -75,8 +75,7 @@ export class LOOKAPage implements DoCheck {
     this.http = http;
     this.cameraService = cameraService;
     this.plt.ready().then(() => {
-      console.log("Платформа готова");
-      //this.getImages();
+      console.log("Платформа готова"); 
     })
   }
 
@@ -103,30 +102,7 @@ export class LOOKAPage implements DoCheck {
     this.imageToShow = 'http://10.5.5.9:8080/videos/DCIM/100GOPRO/' + photo;
   }
 
-
-  // upload(selectedPhotoBlob) {
-  //   console.log(this.file.dataDirectory + 'temp.jpg');
-
-  //   this.file.readAsArrayBuffer(this.file.dataDirectory, 'temp.jpg').then((str) => {
-  //     let blob = new Blob([str], {
-  //       type: "image/jpeg"
-  //     });
-  //     const randomId = Math.random()
-  //       .toString(36)
-  //       .substring(2);
-  //     this.ref = this.afStorage.ref(randomId);
-  //     var fileName = Math.random().toString(36).substring(2);
-  //     this.task = this.afStorage.ref('images/' + fileName + ".jpg").put(blob);
-
-  //     this.uploadState = this.task.snapshotChanges().pipe(map(s => s.state));
-  //     this.uploadProgress = this.task.percentageChanges();
-
-
-  //   }, (reason) => {
-  //     console.log("Файл не прочитан:" + reason)
-  //   });
-
-  // }
+ 
   getMax(arr, prop) {
     var max;
     for (var i = 0; i < arr.length; i++) {
@@ -136,25 +112,7 @@ export class LOOKAPage implements DoCheck {
   };
   downloadPhoto(url, filePath) {
     return this.http.downloadFile(url, {}, {}, this.file.dataDirectory + filePath);
-  };
-  // getImages() {
-  //   this.cameraService.getPhotosList().then((data) => {
-  //     this.newPhotos = JSON.parse(data.data).media[0].fs;
-  //     this.imageToShow = 'http://10.5.5.9:8080/videos/DCIM/100GOPRO/' + this.getMax(this.newPhotos, "mod").n;
-  //     console.log("Последнее фото" + this.imageToShow);
-  //   });
-  // };
-
-  // getImage(imageUrl) {
-  //   this.cameraService.downloadPhoto(imageUrl, 'temp.jpg').then((entry) => {
-  //     console.log('download complete: ' + entry.toURL());
-  //     this.selectedPhotoBlob = entry.toURL();
-  //     this.getImages();
-  //   }, (error) => {
-  //     console.log();
-  //   });
-
-  // };
+  }; 
 
   takePhoto() {
     return this.http.get('http://10.5.5.9/gp/gpControl/command/shutter?p=1', {}, {})
@@ -196,7 +154,7 @@ export class LOOKAPage implements DoCheck {
         });
 
       }, (reason) => {
-        console.log("Файл не прочитан:" + reason)
+        console.log("Файл не прочитан:" + reason) //TODO Отрефакторить все логи
       })
   };
 
