@@ -106,8 +106,7 @@ export class CameraServiceService {
           .substring(2);
         this.ref = this.afStorage.ref(randomId);
         var fileName = Math.random().toString(36).substring(2);
-        return this.afStorage.ref('images/' + fileName + ".jpg").put(blob);
-        // this.uploadState = this.task.snapshotChanges().pipe(map(s => s.state));
+        this.afStorage.ref('images/' + fileName + ".jpg").put(blob);
         // this.uploadProgress = this.task.percentageChanges();
       }, (reason) => {
         console.log("Файл не прочитан:" + reason)

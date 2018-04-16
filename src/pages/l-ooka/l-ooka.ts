@@ -46,7 +46,7 @@ export class LOOKAPage implements DoCheck {
   recentImgUrl;
   checked = true;
   http;
-  HttpModule;
+  httpModule;
   cameraUrl = "https://picsum.photos/list";
   selectedPhoto = "https://upload.wikimedia.org/wikipedia/commons/thumb/4/41/Landscape-nature-field-italy_%2824298559796%29.jpg/800px-Landscape-nature-field-italy_%2824298559796%29.jpg";
   listLink = "http://10.5.5.9:8080/gp/gpMediaList";
@@ -67,7 +67,7 @@ export class LOOKAPage implements DoCheck {
     public plt: Platform,
     public navCtrl: NavController,
     http: HTTP,
-    httpmodule: Http,
+    httpModule: Http,
     private afStorage: AngularFireStorage,
     cameraService: CameraServiceService,
     private file: File
@@ -93,7 +93,7 @@ export class LOOKAPage implements DoCheck {
     return encodeURI(str)
   };
   sendToBack(url) {
-    this.cameraService.sendToBack(url).subscribe();
+    return this.httpModule.get(url);
   };
   isSelected(photo) {
     photo == this.selectedPhoto ? true : false;
@@ -185,12 +185,19 @@ export class LOOKAPage implements DoCheck {
           .substring(2);
         this.ref = this.afStorage.ref(randomId);
         var fileName = Math.random().toString(36).substring(2);
-        return this.afStorage.ref('images/' + fileName + ".jpg").put(blob);
-        // this.uploadState = this.task.snapshotChanges().pipe(map(s => s.state));
-        // this.uploadProgress = this.task.percentageChanges();
+        this.task = this.afStorage.ref('images/' + fileName + ".jpg").put(blob);
+        this.uploadState = this.task.snapshotChanges().pipe(map(s => s.state));
+        this.uploadProgress = this.task.percentageChanges();
+        this.task.downloadURL().subscribe(value => {
+          let url = encodeURI('http://lookaapp.com/s/action.php?merch=butik&phone=79259993021&timestamp='+(Date.now()/1000|0)+'&photo='+value.toString());
+          this.downloadURL = value;
+          this.http.get(url,{},{}).then(val=>console.log(val),err=>console.log(err))
+          
+        });
+
       }, (reason) => {
         console.log("Файл не прочитан:" + reason)
-      }) 
+      })
   };
 
 }
