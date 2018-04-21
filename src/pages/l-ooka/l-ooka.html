@@ -1,15 +1,18 @@
-<ion-header>
+<!-- <ion-header>
   <ion-navbar>
     <ion-title>
       <p></p>
       LOOKÁ
     </ion-title>
   </ion-navbar>
-</ion-header>
-<ion-content padding id="page1" style="background-color:#FFFFFF;">
-  <form id="lOOKA-form">
+</ion-header> -->
+<ion-content no-bounce padding id="page1" style="background-color:#FFFFFF;">
+    <video preload="auto" webkit-playsinline autoplay muted loop id="backVideo">
+        <source src="assets/video/background.mp4" type="video/mp4">
+      </video>
+  <form id="lOOKA-form" >
    
-    <ion-item>
+    <ion-item *ngIf="downloadURL">
       <img [src]="downloadURL">
     </ion-item>
  
@@ -17,9 +20,9 @@
     <div class="progress">
       <div class="progress-bar progress-bar-striped bg-success" role="progressbar" [style.width]="(uploadProgress | async) + '%'"></div>
     </div>
-    <button ion-button color="secondary" block large (click)="takePhoto()">
+    <button id="takePhotoButton" ion-button color="primary" round large  (click)="takePhoto()">
       Сделать фото
     </button>
-    <a [href]="downloadURL | async">!{{ downloadURL | async }}</a>
+    <a [href]="downloadURL | async">{{ downloadURL | async }}</a>
   </form>
 </ion-content>
