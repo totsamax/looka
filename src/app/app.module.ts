@@ -15,7 +15,9 @@ import {FirebaseService} from './../providers/firebase-service/firebase-service'
 import {HTTP} from "@ionic-native/http";
 import { FileTransfer, FileUploadOptions, FileTransferObject } from '@ionic-native/file-transfer';
 import { File } from '@ionic-native/file';
- 
+
+import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
+
 // Initialize Firebase
 const firebaseConfig = {
   apiKey: "AIzaSyBhuI5kmjpdrRLlFUpoR05DuPcrWAg5gQI",
@@ -37,7 +39,8 @@ const firebaseConfig = {
     HttpModule,
     AngularFireDatabaseModule,
     AngularFireStorageModule,
-    AngularFireModule.initializeApp(firebaseConfig)
+    AngularFireModule.initializeApp(firebaseConfig),
+    BrowserAnimationsModule
   ],
   bootstrap: [IonicApp],
   entryComponents: [

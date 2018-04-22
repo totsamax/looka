@@ -11,16 +11,16 @@
         <source src="assets/video/background.mp4" type="video/mp4">
       </video>
   <form id="lOOKA-form" >
-   
+
     <ion-item *ngIf="downloadURL">
       <img [src]="downloadURL">
     </ion-item>
- 
+
     {{(uploadProgress | async)}}
     <div class="progress">
       <div class="progress-bar progress-bar-striped bg-success" role="progressbar" [style.width]="(uploadProgress | async) + '%'"></div>
     </div>
-    <button id="takePhotoButton" ion-button color="primary" round large  (click)="takePhoto()">
+    <button  [@bounce]="{ value: bounce}" id="takePhotoButton" ion-button color="primary" round large  (click)="takePhoto()">
       Сделать фото
     </button>
     <a [href]="downloadURL | async">{{ downloadURL | async }}</a>
