@@ -2,6 +2,8 @@ page-l-ooka {
   .selected {
     border: 2px solid black;
   }
+  .telephone{ 
+  }
   #backVideo {
     position: fixed;
     top: 50%;
@@ -17,11 +19,44 @@ page-l-ooka {
     -o-transform: translateX(-50%) translateY(-50%);
     transform: translateX(-50%) translateY(-50%); 
     background-size: cover;
+    background:no-repeat;
+    -webkit-background-size:cover;
   }
+ 
+
   #lOOKA-form {
     text-align: center;
   }
+  #lOOKA-form-3{
+    width: 250px;
+    margin: 0 auto;
+    text-align: center;
+    
+
+  }
+  #lOOKA-form-2{
+    width: 50%;
+    margin: 0 auto;
+    text-align: center;
+    margin-top: 300px;
+    
+  }
   #takePhotoButton{
     top: 500px;
+  }
+ .timer {
+    color: #ff0095;
+    font-size: 100px;
+    display: block;
+    position: relative;
+    top: -190px;
+    width: 100%;
+    text-align: center;
+}
+ion-input{
+  
+}
+  round-progress{
+    margin: 0 auto;
   }
 }

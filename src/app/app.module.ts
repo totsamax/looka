@@ -15,8 +15,11 @@ import {FirebaseService} from './../providers/firebase-service/firebase-service'
 import {HTTP} from "@ionic-native/http";
 import { FileTransfer, FileUploadOptions, FileTransferObject } from '@ionic-native/file-transfer';
 import { File } from '@ionic-native/file';
+import { Keyboard} from '@ionic-native/keyboard';
+import {RoundProgressModule} from 'angular-svg-round-progressbar';
 
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
+import { BrMaskerModule } from 'brmasker-ionic-3';
 
 // Initialize Firebase
 const firebaseConfig = {
@@ -40,7 +43,9 @@ const firebaseConfig = {
     AngularFireDatabaseModule,
     AngularFireStorageModule,
     AngularFireModule.initializeApp(firebaseConfig),
-    BrowserAnimationsModule
+    BrowserAnimationsModule,
+    BrMaskerModule,
+    RoundProgressModule
   ],
   bootstrap: [IonicApp],
   entryComponents: [
@@ -49,10 +54,13 @@ const firebaseConfig = {
   ],
   providers: [
     StatusBar,
+    Keyboard,
     SplashScreen,
     FirebaseService,
     {provide: ErrorHandler, useClass: IonicErrorHandler},
     HTTP,File, FileTransfer, FileTransferObject
   ]
 })
-export class AppModule {}
+export class AppModule {
+  
+}
