@@ -11,7 +11,7 @@
     <source src="assets/video/background.mp4" type="video/mp4">
   </video>
   <ion-item *ngIf="downloadURL | async" class="test-center">
-      <img [src]="downloadURL | async">
+      <img [src]="imageToShow | async">
     </ion-item>
 
     {{(uploadProgress | async)}}
@@ -36,7 +36,7 @@
   </form>
   <form id="lOOKA-form-3" [@visibility]="stateTime">
     
-    <round-progress [duration]="10" [current]="current | async" [max]="10" (onRender)="takePhoto3()"></round-progress>
+    <round-progress [duration]="secondsToTakeAPhoto" [current]="current | async" [max]="secondsToTakeAPhoto" ></round-progress>
 
     <div class="timer">{{current | async}} </div>
   </form>

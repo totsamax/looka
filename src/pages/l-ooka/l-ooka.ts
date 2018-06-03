@@ -1,3 +1,8 @@
+//TODO Проверять что все цифры телефона введены
+//TODO Проверять доступность камеры
+//TODO Сделать переход на главную страницу
+
+
 import {
   Component,
   DoCheck,
@@ -77,10 +82,12 @@ export class LOOKAPage implements DoCheck {
   stateTime = "hidden"
   recentImgUrl;
   checked = true;
+  secondsToTakeAPhoto=3;
   http;
   httpModule;
   selectedPhoto;
-  takePhotoUrl = "https://picsum.photos/200/300"
+  //takePhotoUrl = "https://picsum.photos/200/300";
+  takePhotoUrl = "http://10.5.5.9/gp/gpControl/command/shutter?p=1";
   listLink = "http://10.5.5.9:8080/gp/gpMediaList";
   selectedPhotoBlob;
   ref: AngularFireStorageReference;
@@ -168,31 +175,29 @@ export class LOOKAPage implements DoCheck {
       var x = setInterval(() => {
         console.log(time);
         observer.next(time=(Math.trunc((Date.now() - timer)/1000)));
-        if ((Date.now() - timer) >= 10000) {clearInterval(x); this.isReady=true}
+        console.log(Date.now() - timer);
+        if ((Date.now() - timer) >= this.secondsToTakeAPhoto*1000) {clearInterval(x); this.isReady=true;this.takePhoto2() }
       }, 1000);
     })
   }
 
-  takePhoto2() {
-    if (this.current >= 10) {
+  takePhoto2() { 
       return this.http
-        .get("http://10.5.5.9/gp/gpControl/command/shutter?p=1", {}, {})
+        .get("http://10.5.5.9/gp/gpControl/command/shutter?p=1", {}, {}) //Делаем фото на камере
         .then(result => {
-          return new Promise(resolve => setTimeout(resolve, 2000));
+          return new Promise(resolve => setTimeout(resolve, 2000));//ждем 2 сек, чтобы успело сфотать
         })
         .then(
           result => {
-            return this.http.get(this.listLink, {}, {});
+            return this.http.get(this.listLink, {}, {});//получаем список всех фото с камеры
           },
           err => console.log(err)
         )
         .then(
           data => {
             let newPhotos = JSON.parse(data.data).media[0].fs;
-            let imageToShow =
-              "http://10.5.5.9:8080/videos/DCIM/100GOPRO/" +
-              this.getMax(newPhotos, "mod").n;
-            return this.downloadPhoto(imageToShow, "temp.jpg");
+            let imageToShow ="http://10.5.5.9:8080/videos/DCIM/100GOPRO/"+this.getMax(newPhotos, "mod").n;//берем последнее фото
+            return this.downloadPhoto(imageToShow, "temp.jpg");//сохранаяем последнее фото на устройство
           },
           err => console.log(err)
         )
@@ -203,7 +208,7 @@ export class LOOKAPage implements DoCheck {
             return this.file.readAsArrayBuffer(
               this.file.dataDirectory,
               "temp.jpg"
-            );
+            );//читаем сохраненное фото как массив
           },
           error => {
             console.log(error);
@@ -230,8 +235,8 @@ export class LOOKAPage implements DoCheck {
             this.uploadProgress = this.task.percentageChanges();
             this.task.downloadURL().subscribe(value => {
               let url = encodeURI(
-                "http://lookaapp.com/s/action.php?merch=butik&phone=79259993021&timestamp=" +
-                ((Date.now() / 1000) | 0) +
+                "http://lookaapp.ru/api/merchant/addlook/?merch=butik&phone=7"+String(this.phoneNumber.replace(/[^0-9]/g, ""))+"&timestamp=" +
+                (Date.now() / 1000|0) +
                 "&photo=" +
                 value.toString()
               );
@@ -242,10 +247,10 @@ export class LOOKAPage implements DoCheck {
             });
           },
           reason => {
-            console.log("Файл не прочитан:" + reason); //TODO Отрефакторить все логи
+            console.log("Файл не прочитан:" + reason); 
           }
         );
-    }
+   
   }
   takePhoto3() {
     if (this.isReady) {
@@ -284,7 +289,7 @@ export class LOOKAPage implements DoCheck {
               .toString(36)
               .substring(2);
             this.task = this.afStorage
-              .ref("images/" + fileName + ".jpg")
+              .ref("img/" + fileName + ".jpg")
               .put(blob);
             this.uploadState = this.task
               .snapshotChanges()
@@ -304,7 +309,7 @@ export class LOOKAPage implements DoCheck {
             });
           },
           reason => {
-            console.log("Файл не прочитан:" + reason); //TODO Отрефакторить все логи
+            console.log("Файл не прочитан:" + reason);
           }
         );
     }
