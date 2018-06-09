@@ -20,6 +20,7 @@ import {RoundProgressModule} from 'angular-svg-round-progressbar';
 
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import { BrMaskerModule } from 'brmasker-ionic-3';
+import { AutofocusDirective } from './autofocus.directive';
 
 // Initialize Firebase
 const firebaseConfig = {
@@ -34,7 +35,8 @@ const firebaseConfig = {
 @NgModule({
   declarations: [
     MyApp,
-    LOOKAPage
+    LOOKAPage,
+    AutofocusDirective
   ],
   imports: [
     BrowserModule,

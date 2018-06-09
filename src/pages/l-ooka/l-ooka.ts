@@ -1,8 +1,7 @@
-//TODO Проверять что все цифры телефона введены
+//TODO: Проверять что все цифры телефона введены
 //TODO Проверять доступность камеры
 //TODO Сделать переход на главную страницу
-
-
+//TODO Сделать автофокус на инпуте - done
 import {
   Component,
   DoCheck,
@@ -85,8 +84,7 @@ export class LOOKAPage implements DoCheck {
   secondsToTakeAPhoto=3;
   http;
   httpModule;
-  selectedPhoto;
-  //takePhotoUrl = "https://picsum.photos/200/300";
+  selectedPhoto; 
   takePhotoUrl = "http://10.5.5.9/gp/gpControl/command/shutter?p=1";
   listLink = "http://10.5.5.9:8080/gp/gpMediaList";
   selectedPhotoBlob;
@@ -104,7 +102,7 @@ export class LOOKAPage implements DoCheck {
   current;
   phoneNumber;
   isReady=false;
-
+  @ViewChild('telephone') public inputEl:ElementRef;
   constructor(
     public plt: Platform,
     public navCtrl: NavController,
@@ -160,8 +158,13 @@ export class LOOKAPage implements DoCheck {
     );
   }
   enterPhone() {
+    
     this.state = this.state == 'shown' ? 'hidden' : 'shown';
     this.stateTel = this.stateTel == 'shown' ? 'hidden' : 'shown';
+   
+  }
+  focusInput(input) {
+    input.setFocus();
   }
   showTimer(){
     this.stateTel = this.stateTel == 'shown' ? 'hidden' : 'shown';
