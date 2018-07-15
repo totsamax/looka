@@ -1,8 +1,11 @@
 page-l-ooka {
+  #page1{
+    background-image: url('../assets/video/background.gif');
+    background-position: center;
+    background-size: 100%;
+  }
   .selected {
     border: 2px solid black;
-  }
-  .telephone{ 
   }
   #backVideo {
     position: fixed;
@@ -11,40 +14,36 @@ page-l-ooka {
     min-width: 100%;
     min-height: 100%;
     width: auto;
-    height: 100%;;
+    height: 100%;
+    ;
     z-index: -100;
     -webkit-transform: translateX(-50%) translateY(-50%);
     -moz-transform: translateX(-50%) translateY(-50%);
     -ms-transform: translateX(-50%) translateY(-50%);
     -o-transform: translateX(-50%) translateY(-50%);
-    transform: translateX(-50%) translateY(-50%); 
+    transform: translateX(-50%) translateY(-50%);
     background-size: cover;
-    background:no-repeat;
-    -webkit-background-size:cover;
+    background: no-repeat;
+    -webkit-background-size: cover;
   }
- 
-
   #lOOKA-form {
     text-align: center;
   }
-  #lOOKA-form-3{
+  #lOOKA-form-3 {
     width: 250px;
     margin: 0 auto;
     text-align: center;
-    
-
   }
-  #lOOKA-form-2{
+  #lOOKA-form-2 {
     width: 50%;
     margin: 0 auto;
     text-align: center;
     margin-top: 300px;
-    
   }
-  #takePhotoButton{
+  #takePhotoButton {
     top: 500px;
   }
- .timer {
+  .timer {
     color: #ff0095;
     font-size: 100px;
     display: block;
@@ -52,11 +51,9 @@ page-l-ooka {
     top: -190px;
     width: 100%;
     text-align: center;
-}
-ion-input{
-  
-}
-  round-progress{
+  }
+  ion-input {}
+  round-progress {
     margin: 0 auto;
   }
 }

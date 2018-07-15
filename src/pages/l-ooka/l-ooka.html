@@ -7,20 +7,18 @@
   </ion-navbar>
 </ion-header> -->
 <ion-content no-bounce padding id="page1" style="background-color:#FFFFFF;">
-  <video preload="auto" webkit-playsinline autoplay muted loop id="backVideo">
-    <source src="assets/video/background.mp4" type="video/mp4">
-  </video>
-  <ion-item *ngIf="downloadURL | async" class="test-center">
-      <img [src]="imageToShow | async">io
-    </ion-item>
 
-    {{(uploadProgress | async)}}
-    <div class="progress">
-      <div class="progress-bar progress-bar-striped bg-success" role="progressbar" [style.width]="(uploadProgress | async) + '%'"></div>
-    </div>
+  <ion-item class="test-center">
+    <img [src]="downloadURL">
+  </ion-item>
+
+  {{(uploadProgress | async)}}
+  <div class="progress">
+    <div class="progress-bar progress-bar-striped bg-success" role="progressbar" [style.width]="(uploadProgress | async) + '%'"></div>
+  </div>
   <form id="lOOKA-form" (click)="enterPhone();focusInput(telephone)">
 
-    
+
     <button [@visibility]="state" id="takePhotoButton" ion-button color="primary" round large>
       Сделать фото
     </button>
@@ -28,16 +26,20 @@
   <form id="lOOKA-form-2" [@visibility]="stateTel">
 
     <ion-item class="tel">
-      <ion-input #telephone type="tel" name="phone" placeholder="Укажите ваш телефон" [brmasker]="{mask:'(000) 000-00-00', len:15}" [(ngModel)]="phoneNumber" ></ion-input>
+      <ion-input #telephone type="tel" name="phone" placeholder="Укажите ваш телефон" [brmasker]="{mask:'(000) 000-00-00', len:15}"
+        [(ngModel)]="phoneNumber"></ion-input>
     </ion-item>
     <button [@visibility]="stateTel" ion-button color="primary" round large (click)="showTimer();timer()">
       Подтвердить телефон
     </button>
   </form>
   <form id="lOOKA-form-3" [@visibility]="stateTime">
-    
-    <round-progress [duration]="secondsToTakeAPhoto" [current]="current | async" [max]="secondsToTakeAPhoto" ></round-progress>
+
+    <round-progress [duration]="secondsToTakeAPhoto" [current]="current | async" [max]="secondsToTakeAPhoto"></round-progress>
 
     <div class="timer">{{current | async}} </div>
   </form>
+  <!-- <video preload="auto" webkit-playsinline autoplay muted loop id="backVideo">
+    <source src="assets/video/background.mp4" type="video/mp4">
+  </video> -->
 </ion-content>

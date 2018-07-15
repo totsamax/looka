@@ -1,7 +1,6 @@
 //TODO: Проверять что все цифры телефона введены
 //TODO Проверять доступность камеры
-//TODO Сделать переход на главную страницу
-//TODO Сделать автофокус на инпуте - done
+//TODO Сделать переход на главную страницу 
 import {
   Component,
   DoCheck,
@@ -81,10 +80,10 @@ export class LOOKAPage implements DoCheck {
   stateTime = "hidden"
   recentImgUrl;
   checked = true;
-  secondsToTakeAPhoto=3;
+  secondsToTakeAPhoto = 3;
   http;
   httpModule;
-  selectedPhoto; 
+  selectedPhoto;
   takePhotoUrl = "http://10.5.5.9/gp/gpControl/command/shutter?p=1";
   listLink = "http://10.5.5.9:8080/gp/gpMediaList";
   selectedPhotoBlob;
@@ -101,8 +100,8 @@ export class LOOKAPage implements DoCheck {
   newPhotos: any;
   current;
   phoneNumber;
-  isReady=false;
-  @ViewChild('telephone') public inputEl:ElementRef;
+  isReady = false;
+  @ViewChild('telephone') public inputEl: ElementRef;
   constructor(
     public plt: Platform,
     public navCtrl: NavController,
@@ -158,163 +157,107 @@ export class LOOKAPage implements DoCheck {
     );
   }
   enterPhone() {
-    
     this.state = this.state == 'shown' ? 'hidden' : 'shown';
     this.stateTel = this.stateTel == 'shown' ? 'hidden' : 'shown';
-   
   }
   focusInput(input) {
     input.setFocus();
   }
-  showTimer(){
+  showTimer() {
     this.stateTel = this.stateTel == 'shown' ? 'hidden' : 'shown';
     this.stateTime = this.stateTime == 'shown' ? 'hidden' : 'shown';
   }
 
+
+
   timer() {
     var timer = Date.now();
-    var time=0;
+    var time = 0;
     this.current = new Observable((observer) => {
       var x = setInterval(() => {
         console.log(time);
-        observer.next(time=(Math.trunc((Date.now() - timer)/1000)));
+        observer.next(time = (Math.trunc((Date.now() - timer) / 1000)));
         console.log(Date.now() - timer);
-        if ((Date.now() - timer) >= this.secondsToTakeAPhoto*1000) {clearInterval(x); this.isReady=true;this.takePhoto2() }
+        if ((Date.now() - timer) >= this.secondsToTakeAPhoto * 1000) {
+          clearInterval(x);
+          this.isReady = true;
+          this.takePhoto2()
+        }
       }, 1000);
     })
   }
 
-  takePhoto2() { 
-      return this.http
-        .get("http://10.5.5.9/gp/gpControl/command/shutter?p=1", {}, {}) //Делаем фото на камере
-        .then(result => {
-          return new Promise(resolve => setTimeout(resolve, 2000));//ждем 2 сек, чтобы успело сфотать
-        })
-        .then(
-          result => {
-            return this.http.get(this.listLink, {}, {});//получаем список всех фото с камеры
-          },
-          err => console.log(err)
-        )
-        .then(
-          data => {
-            let newPhotos = JSON.parse(data.data).media[0].fs;
-            let imageToShow ="http://10.5.5.9:8080/videos/DCIM/100GOPRO/"+this.getMax(newPhotos, "mod").n;//берем последнее фото
-            return this.downloadPhoto(imageToShow, "temp.jpg");//сохранаяем последнее фото на устройство
-          },
-          err => console.log(err)
-        )
-        .then(
-          entry => {
-            console.log("download complete: " + entry.toURL());
-            let PhotoBlob = entry.toURL();
-            return this.file.readAsArrayBuffer(
-              this.file.dataDirectory,
-              "temp.jpg"
-            );//читаем сохраненное фото как массив
-          },
-          error => {
-            console.log(error);
-          }
-        )
-        .then(
-          str => {
-            let blob = new Blob([str], {
-              type: "image/jpeg"
-            });
-            let randomId = Math.random()
-              .toString(36)
-              .substring(2);
-            this.ref = this.afStorage.ref(randomId);
-            var fileName = Math.random()
-              .toString(36)
-              .substring(2);
-            this.task = this.afStorage
-              .ref("images/" + fileName + ".jpg")
-              .put(blob);
-            this.uploadState = this.task
-              .snapshotChanges()
-              .pipe(map(s => s.state));
-            this.uploadProgress = this.task.percentageChanges();
-            this.task.downloadURL().subscribe(value => {
-              let url = encodeURI(
-                "http://lookaapp.ru/api/merchant/addlook/?merch=butik&phone=7"+String(this.phoneNumber.replace(/[^0-9]/g, ""))+"&timestamp=" +
-                (Date.now() / 1000|0) +
-                "&photo=" +
-                value.toString()
-              );
-              this.downloadURL = value;
-              this.http
-                .get(url, {}, {})
-                .then(val => console.log(val), err => console.log(err));
-            });
-          },
-          reason => {
-            console.log("Файл не прочитан:" + reason); 
-          }
-        );
-   
-  }
-  takePhoto3() {
-    if (this.isReady) {
-      return this.http
-        .get(this.takePhotoUrl, {}, {})
-        .then(
-          data => {
-            let imageToShow = this.takePhotoUrl;
-            return this.downloadPhoto(imageToShow, "temp.jpg");
-          },
-          err => console.log(err)
-        )
-        .then(
-          entry => {
-            console.log("download complete: " + entry.toURL());
-            let PhotoBlob = entry.toURL();
-            return this.file.readAsArrayBuffer(
-              this.file.dataDirectory,
-              "temp.jpg"
+  takePhoto2() {
+    return this.http
+      .get("http://10.5.5.9/gp/gpControl/command/shutter?p=1", {}, {}) //Делаем фото на камере
+      .then(result => {
+        return new Promise(resolve => setTimeout(resolve, 2000)); //ждем 2 сек, чтобы успело сфотать
+      })
+      .then(
+        result => {
+          return this.http.get(this.listLink, {}, {}); //получаем список всех фото с камеры
+        },
+        err => console.log(err)
+      )
+      .then(
+        data => {
+          let newPhotos = JSON.parse(data.data).media[0].fs;
+          let imageToShow = "http://10.5.5.9:8080/videos/DCIM/100GOPRO/" + this.getMax(newPhotos, "mod").n; //берем последнее фото
+          return this.downloadPhoto(imageToShow, "temp.jpg"); //сохранаяем последнее фото на устройство
+        },
+        err => console.log(err)
+      )
+      .then(
+        entry => {
+          console.log("download complete: " + entry.toURL());
+          this.downloadURL= entry.toURL().replace(/^file:\/\//, '');
+          let PhotoBlob = entry.toURL();
+          return this.file.readAsArrayBuffer(
+            this.file.dataDirectory,
+            "temp.jpg"
+          ); //читаем сохраненное фото как массив
+        },
+        error => {
+          console.log(error);
+        }
+      )
+      .then(
+        str => {
+          let blob = new Blob([str], {
+            type: "image/jpeg"
+          });  
+          let randomId = Math.random()
+            .toString(36)
+            .substring(2);
+          this.ref = this.afStorage.ref(randomId);
+          var fileName = Math.random()
+            .toString(36)
+            .substring(2);
+          this.task = this.afStorage
+            .ref("images/" + fileName + ".jpg")
+            .put(blob);
+          this.uploadState = this.task
+            .snapshotChanges()
+            .pipe(map(s => s.state));
+          this.uploadProgress = this.task.percentageChanges();
+          this.task.downloadURL().subscribe(value => {
+            let url = encodeURI(
+              "http://lookaapp.ru/api/merchant/addlook/?merch=butik&phone=7" + String(this.phoneNumber.replace(/[^0-9]/g, "")) + "&timestamp=" +
+              (Date.now() / 1000 | 0) +
+              "&photo=" +
+              value.toString()
             );
-          },
-          error => {
-            console.log(error);
-          }
-        )
-        .then(
-          str => {
-            let blob = new Blob([str], {
-              type: "image/jpeg"
-            });
-            let randomId = Math.random()
-              .toString(36)
-              .substring(2);
-            this.ref = this.afStorage.ref(randomId);
-            var fileName = Math.random()
-              .toString(36)
-              .substring(2);
-            this.task = this.afStorage
-              .ref("img/" + fileName + ".jpg")
-              .put(blob);
-            this.uploadState = this.task
-              .snapshotChanges()
-              .pipe(map(s => s.state));
-            this.uploadProgress = this.task.percentageChanges();
-            this.task.downloadURL().subscribe(value => {
-              let url = encodeURI(
-                "http://lookaapp.ru/api/merchant/addlook/?merch=butik&phone=${phoneNumber}&timestamp=" +
-                ((Date.now() / 1000) | 0) +
-                "&photo=" +
-                value.toString()
-              );
-              this.downloadURL = value;
-              this.http
-                .get(url, {}, {})
-                .then(val => console.log(val), err => console.log(err));
-            });
-          },
-          reason => {
-            console.log("Файл не прочитан:" + reason);
-          }
-        );
-    }
+            //this.downloadURL = value;
+            this.http
+              .get(url, {}, {})
+              .then(val => console.log(val), err => console.log(err));
+          });
+        },
+        reason => {
+          console.log("Файл не прочитан:" + reason);
+        }
+      );
+
   }
+ 
 }
