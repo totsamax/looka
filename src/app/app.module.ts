@@ -16,8 +16,6 @@ import {
 import {
   LOOKAPage
 } from '../pages/l-ooka/l-ooka';
-
-
 import {
   StatusBar
 } from '@ionic-native/status-bar';
@@ -66,6 +64,9 @@ import {
 import {
   AutofocusDirective
 } from './autofocus.directive';
+import {
+   BLE
+} from '@ionic-native/ble';
 
 // Initialize Firebase
 const firebaseConfig = {
@@ -103,6 +104,7 @@ const firebaseConfig = {
     StatusBar,
     Keyboard,
     SplashScreen,
+    BLE,
     FirebaseService,
     {
       provide: ErrorHandler,

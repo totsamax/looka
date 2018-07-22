@@ -89,4 +89,8 @@
     <plugin name="cordova-plugin-advanced-http" spec="^1.11.1" />
     <plugin name="cordova-plugin-file-transfer" spec="^1.7.1" />
     <plugin name="ionic-plugin-keyboard" spec="^2.2.1" />
+    <plugin name="cordova-plugin-bluetooth-serial" spec="^0.4.7" />
+    <plugin name="cordova-plugin-ble-central" spec="^1.2.2">
+        <variable name="BLUETOOTH_USAGE_DESCRIPTION" value=" " />
+    </plugin>
 </widget>

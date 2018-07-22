@@ -5,7 +5,8 @@ import {
   Component,
   DoCheck,
   ViewChild,
-  ElementRef
+  ElementRef,
+  NgZone
 } from "@angular/core";
 import {
   NavController
@@ -46,14 +47,17 @@ import {
   transition,
   animate,
   keyframes,
-  useAnimation
-} from "@angular/animations";
+  useAnimation 
+} from "@angular/animations"; 
 import {
   bounceOut
 } from "ng-animate";
 import {
   Keyboard
 } from '@ionic-native/keyboard';
+import {BLE} from '@ionic-native/ble';
+import { ToastController } from 'ionic-angular';
+import { AlertController } from 'ionic-angular';
 
 @Component({
   selector: "page-l-ooka",
@@ -74,6 +78,7 @@ import {
     ])
   ]
 })
+
 export class LOOKAPage implements DoCheck {
   state = "shown";
   stateTel = "hidden"
@@ -101,31 +106,120 @@ export class LOOKAPage implements DoCheck {
   current;
   phoneNumber;
   isReady = false;
+  devices: any[] = [];
+  statusMessage: string;
+  peripheral: any = {}; 
+  currentState:any = {
+    stateStart:'shown',
+    stateImage:'hidden',
+    stateTel:'hidden',
+    stateTime:'hidden'
+  }
+
   @ViewChild('telephone') public inputEl: ElementRef;
   constructor(
+    private ble: BLE,
     public plt: Platform,
     public navCtrl: NavController,
-    http: HTTP,
-    httpModule: Http,
+    private toastCtrl: ToastController, 
+    private ngZone: NgZone,
+    http: HTTP, 
     private afStorage: AngularFireStorage,
     cameraService: CameraServiceService,
     private file: File,
+    public alertCtrl: AlertController,
     private keyboard: Keyboard
   ) {
     this.http = http;
     this.cameraService = cameraService;
     this.plt.ready().then(() => {
       console.log("Платформа готова");
-      keyboard.disableScroll(true)
+      keyboard.disableScroll(true);
+      this.scan();
     });
     keyboard.disableScroll(true);
   }
+  
+
+
+//--------------------------------------------------
+  ionViewDidEnter() {
+    console.log('ionViewDidEnter');
+    this.scan();
+  }
+
+  scan() {
+    this.setStatus('Scanning for Bluetooth LE Devices');
+    this.devices = [];  // clear list
+    this.ble.scan([], 5).subscribe(
+      device => this.onDeviceDiscovered(device), 
+      error => this.scanError(error)
+    );
+
+    setTimeout(this.setStatus.bind(this), 5000, 'Scan complete');
+  }
+
+  onDeviceDiscovered(device) {
+    console.log('Discovered ' + JSON.stringify(device, null, 2));
+    this.ngZone.run(() => {
+      this.devices.push(device);
+    });
+    if (device.name =='GoPro 1840'){
+      this.ble.connect(device.id).subscribe(
+        peripheral => this.onConnected(peripheral),
+        peripheral => this.onDeviceDisconnected(peripheral)
+      );
+    }
+  }
+
+  // If location permission is denied, you'll end up here
+  scanError(error) {
+    this.setStatus('Error ' + error);
+    let toast = this.toastCtrl.create({
+      message: 'Error scanning for Bluetooth low energy devices',
+      position: 'middle',
+      duration: 5000
+    });
+    toast.present();
+  }
+
+  setStatus(message) {
+    console.log(message);
+    this.ngZone.run(() => {
+      this.statusMessage = message;
+    });
+  }
+
+  onConnected(peripheral) {
+    this.ngZone.run(() => {
+      this.setStatus('');
+      this.peripheral = peripheral;
+    });
+  }
+
+  onDeviceDisconnected(peripheral) {
+    let toast = this.toastCtrl.create({
+      message: 'The peripheral unexpectedly disconnected',
+      duration: 3000,
+      position: 'middle'
+    });
+    toast.present();
+  }
+//--------------------------------------------------
+
   ngDoCheck() {
     if (this.photos != this.newPhotos) {
       this.photos = this.newPhotos;
     }
   }
-
+  showAlert() {
+    const alert = this.alertCtrl.create({
+      title: 'Ваше фото отправлено!',
+      subTitle: 'Мы отправили вам ссылку на ваш телефон',
+      buttons: ['OK']
+    });
+    alert.present();
+  }
   parseInt(str) {
     return parseInt(str, 10);
   }
@@ -156,19 +250,16 @@ export class LOOKAPage implements DoCheck {
       this.file.dataDirectory + filePath
     );
   }
-  enterPhone() {
-    this.state = this.state == 'shown' ? 'hidden' : 'shown';
-    this.stateTel = this.stateTel == 'shown' ? 'hidden' : 'shown';
-  }
+ 
   focusInput(input) {
     input.setFocus();
   }
-  showTimer() {
-    this.stateTel = this.stateTel == 'shown' ? 'hidden' : 'shown';
-    this.stateTime = this.stateTime == 'shown' ? 'hidden' : 'shown';
+  
+
+  resetView() { 
+    this.currentState.stateTel = false;
+    this.currentState.stateTime = true;
   }
-
-
 
   timer() {
     var timer = Date.now();
@@ -210,7 +301,7 @@ export class LOOKAPage implements DoCheck {
       .then(
         entry => {
           console.log("download complete: " + entry.toURL());
-          this.downloadURL= entry.toURL().replace(/^file:\/\//, '');
+          this.downloadURL = entry.toURL().replace(/^file:\/\//, '');
           let PhotoBlob = entry.toURL();
           return this.file.readAsArrayBuffer(
             this.file.dataDirectory,
@@ -225,7 +316,7 @@ export class LOOKAPage implements DoCheck {
         str => {
           let blob = new Blob([str], {
             type: "image/jpeg"
-          });  
+          });
           let randomId = Math.random()
             .toString(36)
             .substring(2);
@@ -241,17 +332,18 @@ export class LOOKAPage implements DoCheck {
             .pipe(map(s => s.state));
           this.uploadProgress = this.task.percentageChanges();
           this.task.downloadURL().subscribe(value => {
+            this.showAlert();
             let url = encodeURI(
               "http://lookaapp.ru/api/merchant/addlook/?merch=butik&phone=7" + String(this.phoneNumber.replace(/[^0-9]/g, "")) + "&timestamp=" +
               (Date.now() / 1000 | 0) +
               "&photo=" +
               value.toString()
-            );
-            //this.downloadURL = value;
+            )
             this.http
               .get(url, {}, {})
-              .then(val => console.log(val), err => console.log(err));
+              .then(val => {console.log(val)}, err => console.log(err));
           });
+
         },
         reason => {
           console.log("Файл не прочитан:" + reason);
@@ -259,5 +351,5 @@ export class LOOKAPage implements DoCheck {
       );
 
   }
- 
+
 }

@@ -1,45 +1,48 @@
-<!-- <ion-header>
+<ion-header>
   <ion-navbar>
     <ion-title>
       <p></p>
       LOOKÁ
     </ion-title>
   </ion-navbar>
-</ion-header> -->
-<ion-content no-bounce padding id="page1" style="background-color:#FFFFFF;">
+</ion-header>
 
-  <ion-item class="test-center">
-    <img [src]="downloadURL">
+<ion-content no-bounce padding id="page1" class='center' style="background-color:#FFFFFF;">
+
+  <ion-item class="test-center" [@visibility]="currentState.stateTime">
+    <img [src]="downloadURL"> {{(uploadProgress | async)}}
+    <div class="progress">
+      <div class="progress-bar progress-bar-striped bg-success" role="progressbar" [style.width]="(uploadProgress | async) + '%'"></div>
+    </div>
   </ion-item>
 
-  {{(uploadProgress | async)}}
-  <div class="progress">
-    <div class="progress-bar progress-bar-striped bg-success" role="progressbar" [style.width]="(uploadProgress | async) + '%'"></div>
-  </div>
-  <form id="lOOKA-form" (click)="enterPhone();focusInput(telephone)">
-
-
-    <button [@visibility]="state" id="takePhotoButton" ion-button color="primary" round large>
+  <form id="lOOKA-form" (click)="currentState.stateStart=false;currentState.stateTel=true;focusInput(telephone)">
+    <button [@visibility]="currentState.stateStart" id="takePhotoButton" ion-button color="primary" round large>
       Сделать фото
     </button>
   </form>
-  <form id="lOOKA-form-2" [@visibility]="stateTel">
 
+  <form id="lOOKA-form-2" [@visibility]="currentState.stateTel">
     <ion-item class="tel">
       <ion-input #telephone type="tel" name="phone" placeholder="Укажите ваш телефон" [brmasker]="{mask:'(000) 000-00-00', len:15}"
         [(ngModel)]="phoneNumber"></ion-input>
     </ion-item>
-    <button [@visibility]="stateTel" ion-button color="primary" round large (click)="showTimer();timer()">
+    <button [@visibility]="currentState.stateTel" ion-button color="primary" round large (click)="currentState.stateTime=true;timer()">
       Подтвердить телефон
     </button>
   </form>
-  <form id="lOOKA-form-3" [@visibility]="stateTime">
 
+  <form id="lOOKA-form-3" [@visibility]="currentState.stateTime">
     <round-progress [duration]="secondsToTakeAPhoto" [current]="current | async" [max]="secondsToTakeAPhoto"></round-progress>
-
     <div class="timer">{{current | async}} </div>
+    <button ion-button color="primary" round large (click)="resetView()">
+      На главную
+    </button>
   </form>
-  <!-- <video preload="auto" webkit-playsinline autoplay muted loop id="backVideo">
+
+  <!-- 
+  <video preload="auto" webkit-playsinline autoplay muted loop id="backVideo">
     <source src="assets/video/background.mp4" type="video/mp4">
-  </video> -->
+  </video>  -->
+
 </ion-content>
